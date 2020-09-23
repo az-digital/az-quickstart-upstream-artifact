@@ -1,7 +1,7 @@
 # Ignore paths that contain user-generated content.
-sites/*/files
-sites/*/private
-files/*
+web/sites/*/files
+web/sites/*/private
+web/files/*
 
 # Avoid accidental modification of pantheon.upstream.yml in sites
 # created from this upstream
@@ -10,9 +10,10 @@ pantheon.upstream.yml
 # Pantheon commits a settings.php for environment-specific settings.
 # Place local settings in settings.local.php
 web/sites/*/settings.local.php
-web/sites/*/services*.yml
-!web/sites/*/services.pantheon.*.yml
-!web/sites/*/services.yml
+# Note that services.local.yml is not loaded by default. If you would like
+# to use this file add the following to your settings.local.php file:
+#   $settings['container_yamls'][] = __DIR__ . '/services.local.yml';
+web/sites/*/services.local.yml
 
 # Ignore SimpleTest multi-site environment.
 web/sites/simpletest
@@ -56,3 +57,6 @@ Thumbs.db
 # SASS #
 ##########
 .sass-cache
+
+# Things in the core directory that Drupal 8 commits in the repository.
+!web/core/**/*.gz
