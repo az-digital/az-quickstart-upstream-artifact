@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * @file
+ * Contains az_core.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\pathauto\PathautoPatternInterface;
+
+/**
+ * Implements hook_help().
+ */
+function az_core_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the az_core module.
+    case 'help.page.az_core':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Settings and configuration common to other Quickstart componenets..') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_pathauto_pattern_alter().
+ *
+ * Provide a fallback if the current node is not in a menu.
+ * Reference: https://www.drupal.org/project/pathauto/issues/2904757#comment-13421490
+ */
+function az_core_pathauto_pattern_alter(PathautoPatternInterface $pattern, array $context) {
+  // Manually specify default AZQS pattern.
+  $azqs_pattern = '[node:menu-link:parents:join-path]/[node:menu-link]';
+
+  // Check if context is node and pattern is the AZQS default.
+  if ($context['module'] === 'node' && $pattern->getPattern() === $azqs_pattern) {
+    $menu = $context['data']['node']->__get('menu');
+
+    // Set pattern to fallback if menu is not enabled.
+    if ($menu['enabled'] === 0) {
+      $pattern->setPattern('[node:title]');
+    }
+  }
+}
